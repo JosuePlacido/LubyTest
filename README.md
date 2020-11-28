@@ -52,7 +52,7 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias
 ## :rocket: Funcionalidades implementadasadicionais (feitas como estudo após o envio do teste)
 
 -   Salvar o perfil no asyncStorage
--   Adicionar Shimmer effect durante ... 🚧 em construção 🚧...
+-   Adicionar Shimmer effect
 
 <a id="como-usar"></a>
 

@@ -6,7 +6,7 @@ import React, {
 	useRef,
 } from "react";
 import { AsyncStorage } from "react-native";
-import api from "../services/api";
+import api, { getRepos, getUsers } from "../services/api";
 import { User, UserItem } from "../models/user";
 import Repo from "../models/repo";
 export interface UserContextData {
@@ -14,10 +14,10 @@ export interface UserContextData {
 	signed: boolean;
 	signIn(username: string): Promise<void>;
 	signOut(): void;
-	loadRepo(): void;
+	loadRepo(): Promise<void>;
 	repos: Repo[];
 	user: User | null;
-	loadUsers(sufix: string): void;
+	loadUsers(sufix: string): Promise<void>;
 	userList: UserItem[];
 	followerViewing: boolean;
 	followerView: User | null;
@@ -59,7 +59,7 @@ export const UserProvider: React.FC = ({ children }) => {
 		await AsyncStorage.clear();
 	}
 	async function loadRepo() {
-		const { data } = await api.get(`${user?.login}/repos`);
+		const { data } = await getRepos(`${user?.login}/repos`);
 		setRepos([...data]);
 	}
 	async function visitUser(username: string, type: string) {
@@ -73,7 +73,7 @@ export const UserProvider: React.FC = ({ children }) => {
 		type === "seguidores" ? setFollowerView(data) : setFollowingView(data);
 	}
 	async function loadUsers(sufix: String) {
-		const { data } = await api.get(`${user?.login}/${sufix}`);
+		const { data } = await getUsers(`${user?.login}/${sufix}`);
 		setUserList([...data]);
 	}
 	return (
