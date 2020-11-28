@@ -14,13 +14,15 @@ interface UserListProps {
 }
 const UserList: React.FC<UserListProps> = ({ urlsufix, title }) => {
 	const navigation = useNavigation();
-	const { loadUsers, userList } = useAuth();
+	const { loadFollowers, loadFollowing, following, followers } = useAuth();
 	const [fetching, setFetching] = useState(true);
 	function handleBack() {
 		navigation.goBack();
 	}
 	useFocusEffect(() => {
-		loadUsers(urlsufix).then(() => setFetching(false));
+		urlsufix === "followers"
+			? loadFollowers().then(() => setFetching(false))
+			: loadFollowing().then(() => setFetching(false));
 	});
 	return (
 		<Container>
@@ -30,7 +32,11 @@ const UserList: React.FC<UserListProps> = ({ urlsufix, title }) => {
 				</OpacityButton>
 				<HeaderText>
 					{!fetching ? (
-						`${userList.length} ${title}`
+						`${
+							urlsufix === "followers"
+								? followers.length
+								: following.length
+						} ${title}`
 					) : (
 						<ShimmerText />
 					)}
@@ -46,14 +52,21 @@ const UserList: React.FC<UserListProps> = ({ urlsufix, title }) => {
 						<UserItemShimmer />
 					</>
 				)}
-				{!fetching &&
-					userList.map((user) => (
-						<UserItemCell
-							key={user.login}
-							user={user}
-							typeList={title}
-						/>
-					))}
+				{!fetching && urlsufix === "followers"
+					? followers.map((user) => (
+							<UserItemCell
+								key={user.login}
+								user={user}
+								typeList={title}
+							/>
+					  ))
+					: following.map((user) => (
+							<UserItemCell
+								key={user.login}
+								user={user}
+								typeList={title}
+							/>
+					  ))}
 			</ScrollView>
 		</Container>
 	);

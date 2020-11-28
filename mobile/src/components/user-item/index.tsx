@@ -11,7 +11,7 @@ import {
 import { UserItem } from "../../models/user";
 import { OpacityButton } from "../../global-styles/buttons";
 import { useAuth } from "../../contexts/user";
-import ShimmerText from "../shimmer";
+import ShimmerText, { ShimmerImage } from "../shimmer";
 export interface InfoProps {
 	user: UserItem;
 	typeList: string;
@@ -38,7 +38,7 @@ export const UserItemShimmer: React.FC = () => {
 		<Container>
 			<TitleView>
 				<Indicator />
-				<AvatarUser source={{ uri: null }} />
+				<ShimmerImage />
 				<ShimmerText />
 			</TitleView>
 		</Container>

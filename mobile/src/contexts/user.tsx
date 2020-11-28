@@ -17,8 +17,10 @@ export interface UserContextData {
 	loadRepo(): Promise<void>;
 	repos: Repo[];
 	user: User | null;
-	loadUsers(sufix: string): Promise<void>;
-	userList: UserItem[];
+	loadFollowers(): Promise<void>;
+	loadFollowing(): Promise<void>;
+	followers: UserItem[];
+	following: UserItem[];
 	followerViewing: boolean;
 	followerView: User | null;
 	followingViewing: boolean;
@@ -29,7 +31,8 @@ export const UserProvider: React.FC = ({ children }) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [followerView, setFollowerView] = useState<User | null>(null);
 	const [followingView, setFollowingView] = useState<User | null>(null);
-	const [userList, setUserList] = useState<UserItem[]>([]);
+	const [followers, setFollowers] = useState<UserItem[]>([]);
+	const [following, setfollowing] = useState<UserItem[]>([]);
 	const [repos, setRepos] = useState<Repo[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -54,7 +57,8 @@ export const UserProvider: React.FC = ({ children }) => {
 		setUser(null);
 		setFollowerView(null);
 		setFollowingView(null);
-		setUserList([]);
+		setfollowing([]);
+		setFollowers([]);
 		setRepos([]);
 		await AsyncStorage.clear();
 	}
@@ -72,9 +76,13 @@ export const UserProvider: React.FC = ({ children }) => {
 		const { data } = await api.get(username);
 		type === "seguidores" ? setFollowerView(data) : setFollowingView(data);
 	}
-	async function loadUsers(sufix: String) {
-		const { data } = await getUsers(`${user?.login}/${sufix}`);
-		setUserList([...data]);
+	async function loadFollowers() {
+		const { data } = await getUsers(`${user?.login}/followers`);
+		setFollowers([...data]);
+	}
+	async function loadFollowing() {
+		const { data } = await getUsers(`${user?.login}/following`);
+		setfollowing([...data]);
 	}
 	return (
 		<UserContext.Provider
@@ -86,8 +94,10 @@ export const UserProvider: React.FC = ({ children }) => {
 				user,
 				loadRepo,
 				repos,
-				loadUsers,
-				userList,
+				loadFollowers,
+				loadFollowing,
+				followers,
+				following,
 				followerViewing: !!followerView,
 				followerView,
 				followingViewing: !!followingView,
